@@ -1,0 +1,429 @@
+/*
+ * Maiyalis: Cinematic Slideshow
+ *
+ * Two unrelated surfaces live in here:
+ *   1. The GM's windows (library, editors, settings) — ordinary ApplicationV2
+ *      forms, styled only where Foundry's own form CSS leaves a gap.
+ *   2. The stage — a full-viewport overlay the whole table watches.
+ *
+ * Foundry live-applies changes to this file with no page refresh, so it is the
+ * fastest thing in the module to iterate on.
+ */
+
+/* ---------------------------------------------------------------- sidebar -- */
+
+.foundry-cinematic-slideshow-launch-row {
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.foundry-cinematic-slideshow-launch {
+  flex: 1;
+  white-space: nowrap;
+}
+
+/* ------------------------------------------------------------- GM windows -- */
+
+.fcs-config .fcs-config-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px;
+  overflow-y: auto;
+}
+
+.fcs-library__toolbar,
+.fcs-editor__toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.fcs-editor__heading {
+  flex: 1;
+  font-weight: bold;
+}
+
+.fcs-library__toolbar button,
+.fcs-editor__toolbar button {
+  flex: 0 0 auto;
+}
+
+.fcs-library__list,
+.fcs-editor__list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fcs-library__row,
+.fcs-editor__row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px;
+  border: 1px solid var(--color-border-light-tertiary, rgb(0 0 0 / 25%));
+  border-radius: 4px;
+  background: rgb(0 0 0 / 5%);
+}
+
+.fcs-editor__number {
+  flex: 0 0 1.5em;
+  text-align: center;
+  font-weight: bold;
+  opacity: 0.6;
+}
+
+/* The placeholder icon and a real thumbnail have to occupy the same box, or the
+   list jumps as slides gain images. */
+.fcs-library__thumb,
+.fcs-editor__thumb {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 40px;
+  overflow: hidden;
+  border-radius: 3px;
+  background: rgb(0 0 0 / 20%);
+  opacity: 0.85;
+}
+
+.fcs-library__thumb img,
+.fcs-editor__thumb img {
+  width: 100%;
+  height: 100%;
+  border: none;
+  object-fit: cover;
+}
+
+.fcs-library__meta,
+.fcs-editor__meta {
+  display: flex;
+  flex: 1;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.fcs-library__name,
+.fcs-editor__summary {
+  overflow: hidden;
+  font-weight: bold;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fcs-library__count,
+.fcs-editor__tags {
+  font-size: var(--font-size-12, 12px);
+  opacity: 0.7;
+}
+
+.fcs-library__actions,
+.fcs-editor__actions {
+  display: flex;
+  flex: 0 0 auto;
+  gap: 2px;
+}
+
+.fcs-library__actions button,
+.fcs-editor__actions button {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+  padding: 0;
+  line-height: 1;
+}
+
+.fcs-library__empty {
+  padding: 16px 8px;
+  text-align: center;
+}
+
+/* ----------------------------------------------------------------- stage -- */
+
+/*
+ * A frameless, unpositioned ApplicationV2 (window.frame / positioned both off),
+ * so nothing here is fighting Foundry's inline geometry — this rule is the whole
+ * layout. z-index 90000 matches the sibling modules' overlays; !important is
+ * needed because Foundry writes an inline z-index on windows as it brings one
+ * to the front.
+ */
+.fcs-stage {
+  position: fixed;
+  z-index: 90000 !important;
+  display: flex;
+  overflow: hidden;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  inset: 0;
+}
+
+/* Set by the app on render. Without it the overlay would sit over the canvas
+   swallowing clicks in the beat between a show ending and the app closing. */
+.fcs-stage:not(.fcs-stage--active) {
+  display: none;
+}
+
+.fcs-stage__slide {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.fcs-stage__image {
+  flex: 1 1 auto;
+  align-self: stretch;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.fcs-fit--cover .fcs-stage__image {
+  background-size: cover;
+}
+
+.fcs-fit--contain .fcs-stage__image {
+  background-size: contain;
+}
+
+.fcs-stage__text {
+  display: flex;
+  max-width: 60ch;
+  flex-direction: column;
+  gap: 0.6em;
+  padding: 2rem 3rem;
+  color: #f4f1ea;
+  text-align: center;
+  text-shadow: 0 2px 8px rgb(0 0 0 / 90%);
+}
+
+.fcs-stage__title {
+  border: none;
+  margin: 0;
+  color: inherit;
+  font-size: clamp(1.8rem, 4vw, 3.2rem);
+  line-height: 1.15;
+}
+
+.fcs-stage__paragraph {
+  margin: 0;
+  font-size: clamp(1rem, 1.8vw, 1.5rem);
+  line-height: 1.5;
+}
+
+/* ---- layouts ---------------------------------------------------------- */
+
+/* imageOnly and textOnly need no rules of their own: the slide is a centred
+   flex row, and the missing half simply is not rendered. */
+
+.fcs-layout--overlay {
+  flex-direction: column;
+}
+
+.fcs-layout--overlay .fcs-stage__image {
+  position: absolute;
+  inset: 0;
+}
+
+/* The band is what keeps text legible over an arbitrary image — a shadow alone
+   loses against a bright sky. */
+.fcs-layout--overlay .fcs-stage__text {
+  position: relative;
+  max-width: 70ch;
+  padding: 2.5rem 3rem;
+  border-radius: 6px;
+  background: rgb(0 0 0 / 55%);
+  backdrop-filter: blur(3px);
+}
+
+.fcs-layout--imageLeft {
+  flex-direction: row;
+}
+
+.fcs-layout--imageRight {
+  flex-direction: row-reverse;
+}
+
+.fcs-layout--imageTop {
+  flex-direction: column;
+}
+
+.fcs-layout--imageLeft .fcs-stage__image,
+.fcs-layout--imageRight .fcs-stage__image {
+  flex: 0 0 55%;
+}
+
+.fcs-layout--imageLeft .fcs-stage__text,
+.fcs-layout--imageRight .fcs-stage__text {
+  flex: 1 1 auto;
+  text-align: left;
+}
+
+.fcs-layout--imageTop .fcs-stage__image {
+  flex: 0 0 65%;
+  width: 100%;
+  align-self: auto;
+}
+
+/* ---- animations ------------------------------------------------------- */
+
+/*
+ * Each class is applied to the whole slide, stripped and re-added on render to
+ * restart it (see StageApp.restartAnimation). Keep them additive: an animation
+ * should never leave a transform behind, because the slide sits under whatever
+ * comes next.
+ */
+
+@media (prefers-reduced-motion: no-preference) {
+  .fcs-anim--fade {
+    animation: fcs-fade 700ms ease-out both;
+  }
+
+  .fcs-anim--slideLeft {
+    animation: fcs-slide-left 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .fcs-anim--slideUp {
+    animation: fcs-slide-up 700ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .fcs-anim--zoom {
+    animation: fcs-zoom 900ms ease-out both;
+  }
+
+  /* Runs for the life of the slide rather than as an entrance — the drift is
+     the effect, not the arrival. Only the image moves; text drifting with it
+     would be unreadable. */
+  .fcs-anim--kenBurns .fcs-stage__image {
+    animation: fcs-ken-burns 24s ease-out both;
+  }
+}
+
+@keyframes fcs-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes fcs-slide-left {
+  from {
+    opacity: 0;
+    transform: translateX(6%);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes fcs-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(6%);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fcs-zoom {
+  from {
+    opacity: 0;
+    transform: scale(1.08);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes fcs-ken-burns {
+  from {
+    transform: scale(1) translate(0, 0);
+  }
+  to {
+    transform: scale(1.12) translate(-1.5%, -1.5%);
+  }
+}
+
+/* ---- GM control bar --------------------------------------------------- */
+
+/*
+ * On the stage, not behind it. The overlay covers the viewport, so a separate
+ * presenter window would be unclickable underneath it — and a show with no way
+ * to advance or end is the worst thing that can happen mid-session.
+ */
+.fcs-stage__controls {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  border: 1px solid rgb(255 255 255 / 15%);
+  border-bottom: none;
+  border-radius: 8px 8px 0 0;
+  background: rgb(15 15 18 / 88%);
+  color: #f4f1ea;
+  gap: 8px;
+  opacity: 0.35;
+  transform: translateX(-50%);
+  transition: opacity 200ms ease-out;
+}
+
+/* Out of the way until wanted: the GM is watching the same slide the table is,
+   and a lit-up control bar over every scene is not what anyone wants. */
+.fcs-stage__controls:hover,
+.fcs-stage__controls:focus-within {
+  opacity: 1;
+}
+
+.fcs-stage__controls button {
+  width: auto;
+  flex: 0 0 auto;
+  padding: 4px 10px;
+  border: 1px solid rgb(255 255 255 / 20%);
+  background: rgb(255 255 255 / 8%);
+  color: inherit;
+  line-height: 1.4;
+}
+
+.fcs-stage__controls button:hover:not(:disabled) {
+  background: rgb(255 255 255 / 18%);
+}
+
+.fcs-stage__controls button:disabled {
+  opacity: 0.4;
+}
+
+.fcs-stage__controls .fcs-stage__end:hover {
+  background: rgb(180 40 40 / 55%);
+}
+
+.fcs-stage__show-name {
+  max-width: 24ch;
+  overflow: hidden;
+  padding-right: 4px;
+  font-weight: bold;
+  opacity: 0.8;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.fcs-stage__counter {
+  padding: 0 4px;
+  font-variant-numeric: tabular-nums;
+  opacity: 0.8;
+}

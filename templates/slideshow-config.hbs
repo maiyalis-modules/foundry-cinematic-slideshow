@@ -1,0 +1,27 @@
+{{!-- The settings window body. One root element, since ApplicationV2 requires
+     each part to render exactly one — Save/Cancel are the shared config-footer
+     part, not embedded here. --}}
+<div class="fcs-config-body">
+
+  <div class="form-group">
+    <label for="fcs-show-journal-button">{{localize "FCS.Settings.ShowJournalButtonName"}}</label>
+    <div class="form-fields">
+      <input type="checkbox" id="fcs-show-journal-button" name="showJournalButton"
+             {{#if showJournalButton}}checked{{/if}}>
+    </div>
+    <p class="hint">{{localize "FCS.Settings.ShowJournalButtonHint"}}</p>
+  </div>
+
+  <div class="form-group">
+    <label for="fcs-default-animation">{{localize "FCS.Settings.DefaultAnimationName"}}</label>
+    <div class="form-fields">
+      <select id="fcs-default-animation" name="defaultAnimation">
+        {{#each animations}}
+          <option value="{{this.value}}" {{#if this.selected}}selected{{/if}}>{{localize this.label}}</option>
+        {{/each}}
+      </select>
+    </div>
+    <p class="hint">{{localize "FCS.Settings.DefaultAnimationHint"}}</p>
+  </div>
+
+</div>

@@ -1,0 +1,13 @@
+{{!-- Save/Cancel for the whole window. `data-fcs` rather than `data-action`
+     because the click dispatch is our own delegated listener (see
+     apps/config-window.ts). --}}
+<footer class="form-footer">
+  <button type="button" data-fcs="cancel">
+    <i class="fa-solid fa-xmark"></i>
+    {{localize "FCS.Config.Cancel"}}
+  </button>
+  <button type="button" data-fcs="save">
+    <i class="fa-solid fa-floppy-disk"></i>
+    {{localize "FCS.Config.Save"}}
+  </button>
+</footer>

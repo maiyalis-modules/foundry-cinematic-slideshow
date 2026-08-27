@@ -1,0 +1,20 @@
+{
+  "name": "foundry-cinematic-slideshow",
+  "version": "0.0.1",
+  "description": "Maiyalis: Cinematic Slideshow — GM-controlled visual slide sequences broadcast to the table in FoundryVTT.",
+  "type": "module",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "build": "tsc --noEmit && vite build",
+    "watch": "vite build --watch",
+    "dev": "vite build --watch",
+    "typecheck": "tsc --noEmit",
+    "clean": "rimraf dist"
+  },
+  "devDependencies": {
+    "rimraf": "^6.0.1",
+    "typescript": "^5.5.4",
+    "vite": "^5.4.0"
+  }
+}

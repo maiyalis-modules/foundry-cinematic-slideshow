@@ -1,0 +1,34 @@
+{
+  "id": "foundry-cinematic-slideshow",
+  "title": "Maiyalis: Cinematic Slideshow",
+  "description": "GM-controlled cinematic slideshows broadcast to the whole table. Build a sequence of slides from an image and text, pick a layout and an entrance animation, then drive it live with Previous / Replay / Next while the players watch it full-screen. System-agnostic.",
+  "version": "0.0.1",
+  "authors": [
+    {
+      "name": "Brenton",
+      "email": "brenton.morse@gmail.com"
+    }
+  ],
+  "compatibility": {
+    "minimum": "14",
+    "verified": "14"
+  },
+  "esmodules": [
+    "dist/module.js"
+  ],
+  "styles": [
+    "styles/module.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
+  "packs": [],
+  "socket": false,
+  "url": "https://github.com/maiyalis-modules/foundry-cinematic-slideshow",
+  "manifest": "https://github.com/maiyalis-modules/foundry-cinematic-slideshow/releases/latest/download/module.json",
+  "download": "https://github.com/maiyalis-modules/foundry-cinematic-slideshow/releases/download/v0.0.1/module.zip"
+}

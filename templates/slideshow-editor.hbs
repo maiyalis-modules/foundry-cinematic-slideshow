@@ -1,0 +1,74 @@
+{{!-- The slideshow editor: name plus the ordered slide list. Everything here
+     edits the app's draft copy and re-renders; only the footer's Save writes it
+     back to the library (see apps/slideshow-editor-app.ts). --}}
+<div class="fcs-config-body fcs-editor">
+
+  <div class="form-group">
+    <label for="fcs-show-name">{{localize "FCS.Editor.NameLabel"}}</label>
+    <div class="form-fields">
+      <input type="text" id="fcs-show-name" name="name" value="{{name}}"
+             placeholder="{{localize "FCS.Editor.NamePlaceholder"}}">
+    </div>
+  </div>
+
+  <div class="fcs-editor__toolbar">
+    <span class="fcs-editor__heading">{{localize "FCS.Editor.Slides"}}</span>
+    <button type="button" data-fcs="add-slide">
+      <i class="fa-solid fa-plus"></i>
+      {{localize "FCS.Editor.AddSlide"}}
+    </button>
+  </div>
+
+  {{#if empty}}
+    <p class="hint">{{localize "FCS.Editor.NoSlides"}}</p>
+  {{else}}
+    <ol class="fcs-editor__list">
+      {{#each slides}}
+        <li class="fcs-editor__row" data-slide-id="{{this.id}}">
+          <span class="fcs-editor__number">{{this.number}}</span>
+
+          <div class="fcs-editor__thumb">
+            {{#if this.image}}
+              <img src="{{this.image}}" alt="">
+            {{else}}
+              <i class="fa-solid fa-align-left"></i>
+            {{/if}}
+          </div>
+
+          <div class="fcs-editor__meta">
+            <span class="fcs-editor__summary">{{this.summary}}</span>
+            <span class="fcs-editor__tags">
+              {{localize this.layoutLabel}} · {{localize this.animationLabel}}
+            </span>
+          </div>
+
+          <div class="fcs-editor__actions">
+            <button type="button" data-fcs="move-up" data-slide-id="{{this.id}}"
+                    {{#if this.isFirst}}disabled{{/if}}
+                    data-tooltip="{{localize "FCS.Editor.MoveUp"}}"
+                    aria-label="{{localize "FCS.Editor.MoveUp"}}">
+              <i class="fa-solid fa-chevron-up"></i>
+            </button>
+            <button type="button" data-fcs="move-down" data-slide-id="{{this.id}}"
+                    {{#if this.isLast}}disabled{{/if}}
+                    data-tooltip="{{localize "FCS.Editor.MoveDown"}}"
+                    aria-label="{{localize "FCS.Editor.MoveDown"}}">
+              <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <button type="button" data-fcs="edit-slide" data-slide-id="{{this.id}}"
+                    data-tooltip="{{localize "FCS.Editor.EditSlide"}}"
+                    aria-label="{{localize "FCS.Editor.EditSlide"}}">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <button type="button" data-fcs="remove-slide" data-slide-id="{{this.id}}"
+                    data-tooltip="{{localize "FCS.Editor.RemoveSlide"}}"
+                    aria-label="{{localize "FCS.Editor.RemoveSlide"}}">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        </li>
+      {{/each}}
+    </ol>
+  {{/if}}
+
+</div>

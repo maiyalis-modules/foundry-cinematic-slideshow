@@ -1,0 +1,66 @@
+{{!-- One slide's fields. One root element (ApplicationV2 requires exactly one
+     per part) — Save/Cancel are the shared config-footer part. --}}
+<div class="fcs-config-body">
+
+  <p class="hint">{{position}}</p>
+
+  <div class="form-group">
+    <label for="fcs-slide-image">{{localize "FCS.SlideEditor.ImageLabel"}}</label>
+    <div class="form-fields">
+      <file-picker type="image" id="fcs-slide-image" name="image" value="{{image}}"></file-picker>
+    </div>
+    <p class="hint">{{localize "FCS.SlideEditor.ImageHint"}}</p>
+  </div>
+
+  <div class="form-group">
+    <label for="fcs-slide-title">{{localize "FCS.SlideEditor.TitleLabel"}}</label>
+    <div class="form-fields">
+      <input type="text" id="fcs-slide-title" name="title" value="{{title}}"
+             placeholder="{{localize "FCS.SlideEditor.TitlePlaceholder"}}">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="fcs-slide-text">{{localize "FCS.SlideEditor.TextLabel"}}</label>
+    <div class="form-fields">
+      <textarea id="fcs-slide-text" name="text" rows="5"
+                placeholder="{{localize "FCS.SlideEditor.TextPlaceholder"}}">{{text}}</textarea>
+    </div>
+    <p class="hint">{{localize "FCS.SlideEditor.TextHint"}}</p>
+  </div>
+
+  <div class="form-group">
+    <label for="fcs-slide-layout">{{localize "FCS.SlideEditor.LayoutLabel"}}</label>
+    <div class="form-fields">
+      <select id="fcs-slide-layout" name="layout">
+        {{#each layouts}}
+          <option value="{{this.value}}" {{#if this.selected}}selected{{/if}}>{{localize this.label}}</option>
+        {{/each}}
+      </select>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="fcs-slide-animation">{{localize "FCS.SlideEditor.AnimationLabel"}}</label>
+    <div class="form-fields">
+      <select id="fcs-slide-animation" name="animation">
+        {{#each animations}}
+          <option value="{{this.value}}" {{#if this.selected}}selected{{/if}}>{{localize this.label}}</option>
+        {{/each}}
+      </select>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="fcs-slide-fit">{{localize "FCS.SlideEditor.FitLabel"}}</label>
+    <div class="form-fields">
+      <select id="fcs-slide-fit" name="fit">
+        {{#each fits}}
+          <option value="{{this.value}}" {{#if this.selected}}selected{{/if}}>{{localize this.label}}</option>
+        {{/each}}
+      </select>
+    </div>
+    <p class="hint">{{localize "FCS.SlideEditor.FitHint"}}</p>
+  </div>
+
+</div>

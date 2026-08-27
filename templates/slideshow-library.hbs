@@ -1,0 +1,59 @@
+{{!-- The slideshow library. One root element (ApplicationV2 renders exactly one
+     per part); this window has no shared footer because New Slideshow belongs at
+     the top of the list, not beside a Save button it does not have. --}}
+<div class="fcs-config-body fcs-library">
+
+  <div class="fcs-library__toolbar">
+    <button type="button" data-fcs="new">
+      <i class="fa-solid fa-plus"></i>
+      {{localize "FCS.Library.New"}}
+    </button>
+  </div>
+
+  {{#if empty}}
+    <p class="hint fcs-library__empty">{{localize "FCS.Library.Empty"}}</p>
+  {{else}}
+    <ol class="fcs-library__list">
+      {{#each shows}}
+        <li class="fcs-library__row" data-show-id="{{this.id}}">
+          <div class="fcs-library__thumb">
+            {{#if this.thumbnail}}
+              <img src="{{this.thumbnail}}" alt="">
+            {{else}}
+              <i class="fa-solid fa-align-left"></i>
+            {{/if}}
+          </div>
+
+          <div class="fcs-library__meta">
+            <span class="fcs-library__name">{{this.name}}</span>
+            <span class="fcs-library__count">{{this.count}}</span>
+          </div>
+
+          <div class="fcs-library__actions">
+            <button type="button" data-fcs="present" data-show-id="{{this.id}}"
+                    data-tooltip="{{localize "FCS.Library.Present"}}"
+                    aria-label="{{localize "FCS.Library.Present"}}">
+              <i class="fa-solid fa-play"></i>
+            </button>
+            <button type="button" data-fcs="edit" data-show-id="{{this.id}}"
+                    data-tooltip="{{localize "FCS.Library.Edit"}}"
+                    aria-label="{{localize "FCS.Library.Edit"}}">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
+            <button type="button" data-fcs="duplicate" data-show-id="{{this.id}}"
+                    data-tooltip="{{localize "FCS.Library.Duplicate"}}"
+                    aria-label="{{localize "FCS.Library.Duplicate"}}">
+              <i class="fa-solid fa-clone"></i>
+            </button>
+            <button type="button" data-fcs="delete" data-show-id="{{this.id}}"
+                    data-tooltip="{{localize "FCS.Library.Delete"}}"
+                    aria-label="{{localize "FCS.Library.Delete"}}">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+          </div>
+        </li>
+      {{/each}}
+    </ol>
+  {{/if}}
+
+</div>
