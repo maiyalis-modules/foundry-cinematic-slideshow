@@ -1,11 +1,21 @@
 {{!-- Save/Cancel for the whole window. `data-fcs` rather than `data-action`
      because the click dispatch is our own delegated listener (see
-     apps/config-window.ts). --}}
+     apps/config-window.ts).
+
+     Save & Add appears only for a window that sets `canSaveAndAdd` — today just
+     the slide editor, and only while adding rather than editing. Save stays
+     rightmost in both cases so it does not move under the pointer. --}}
 <footer class="form-footer">
   <button type="button" data-fcs="cancel">
     <i class="fa-solid fa-xmark"></i>
     {{localize "FCS.Config.Cancel"}}
   </button>
+  {{#if canSaveAndAdd}}
+    <button type="button" data-fcs="save-and-add">
+      <i class="fa-solid fa-plus"></i>
+      {{localize "FCS.Config.SaveAndAdd"}}
+    </button>
+  {{/if}}
   <button type="button" data-fcs="save">
     <i class="fa-solid fa-floppy-disk"></i>
     {{localize "FCS.Config.Save"}}

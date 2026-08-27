@@ -19,13 +19,26 @@ interface FilePickerElement extends HTMLElement {
   value: string;
 }
 
+/**
+ * What the caller is handed back.
+ *
+ * `addAnother` is Save & Add: the slide is finished, and the GM wants a blank
+ * one straight after it. Deciding what "another slide" means belongs to the
+ * parent, which owns the list — this window only reports which button was
+ * pressed.
+ */
+export type SlideSubmit = (slide: Slide, addAnother: boolean) => void;
+
 export class SlideEditorApp extends HandlebarsApplicationMixin(ApplicationV2) {
   private readonly slide: Slide;
-  private readonly onSubmit: (slide: Slide) => void;
+  private readonly isNew: boolean;
+  private readonly onSubmit: SlideSubmit;
   private readonly position: string;
 
+  // No `id` here: it is set per instance in the constructor. Save & Add closes
+  // this window and opens the next one immediately, and two ApplicationV2s
+  // sharing an id while one is still tearing down is a race worth not having.
   static DEFAULT_OPTIONS: AnyObject = {
-    id: `${MODULE_ID}-slide-editor`,
     tag: "form",
     classes: [MODULE_ID, "fcs-config", "standard-form"],
     window: {
@@ -44,15 +57,23 @@ export class SlideEditorApp extends HandlebarsApplicationMixin(ApplicationV2) {
     footer: { template: TEMPLATES.configFooter },
   };
 
-  /** `position` is the human slide number, for the window's subtitle line. */
+  /**
+   * `isNew` drives Save & Add — it is only offered while adding, because
+   * "save this and start another" is meaningless when you opened an existing
+   * slide to fix a typo in it.
+   *
+   * `position` is the human slide number, for the window's subtitle line.
+   */
   constructor(
     slide: Slide,
+    isNew: boolean,
     position: string,
-    onSubmit: (slide: Slide) => void,
+    onSubmit: SlideSubmit,
     options: AnyObject = {},
   ) {
-    super(options);
+    super({ id: `${MODULE_ID}-slide-editor-${slide.id}`, ...options });
     this.slide = slide;
+    this.isNew = isNew;
     this.position = position;
     this.onSubmit = onSubmit;
   }
@@ -63,6 +84,9 @@ export class SlideEditorApp extends HandlebarsApplicationMixin(ApplicationV2) {
       ...context,
       ...this.slide,
       position: this.position,
+      // Read by the shared config footer, which renders Save & Add only when a
+      // window asks for it. The context prepared here reaches every part.
+      canSaveAndAdd: this.isNew,
       // `selected` precomputed per option — Handlebars here has no `eq` helper.
       layouts: Object.values(LAYOUTS).map((layout) => ({
         value: layout,
@@ -93,12 +117,29 @@ export class SlideEditorApp extends HandlebarsApplicationMixin(ApplicationV2) {
     root.addEventListener("click", (event: Event) => {
       const el = (event.target as HTMLElement | null)?.closest?.("[data-fcs]") as HTMLElement | null;
       if (!el || !root.contains(el)) return;
-      if (el.dataset["fcs"] === "save") void this.onSave();
-      else if (el.dataset["fcs"] === "cancel") void this.close();
+      switch (el.dataset["fcs"]) {
+        case "save":
+          void this.onSave(false);
+          return;
+        case "save-and-add":
+          void this.onSave(true);
+          return;
+        case "cancel":
+          void this.close();
+          return;
+      }
     });
   }
 
-  private async onSave(): Promise<void> {
+  /**
+   * Read the controls back and hand the slide to the caller.
+   *
+   * The window closes either way, including on Save & Add: the parent responds
+   * by opening a fresh editor, so a GM adding six slides in a row gets six
+   * windows in sequence rather than one that quietly changes what it is
+   * pointing at.
+   */
+  private async onSave(addAnother: boolean): Promise<void> {
     const root = this.element as HTMLElement | undefined;
     if (!root) return;
 
@@ -106,7 +147,7 @@ export class SlideEditorApp extends HandlebarsApplicationMixin(ApplicationV2) {
       root.querySelector<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>(selector)
         ?.value ?? "";
 
-    this.onSubmit({
+    const edited: Slide = {
       ...this.slide,
       image: root.querySelector<FilePickerElement>("file-picker[name='image']")?.value ?? "",
       title: value("input[name='title']"),
@@ -114,7 +155,11 @@ export class SlideEditorApp extends HandlebarsApplicationMixin(ApplicationV2) {
       layout: value("select[name='layout']") as Layout,
       animation: value("select[name='animation']") as Animation,
       fit: value("select[name='fit']") as Fit,
-    });
+    };
+
+    // Close first: the callback may open the next editor, and this one should be
+    // gone by then rather than fighting it for the same screen position.
     await this.close();
+    this.onSubmit(edited, addAnother);
   }
 }

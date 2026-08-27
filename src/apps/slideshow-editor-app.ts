@@ -122,13 +122,26 @@ export class SlideshowEditorApp extends HandlebarsApplicationMixin(ApplicationV2
     return game.settings.get(MODULE_ID, SETTINGS.defaultAnimation) as Animation;
   }
 
+  /**
+   * Open a blank slide in its own editor.
+   *
+   * The slide is **not** put into the draft here — it is appended by the submit
+   * callback below, so cancelling out of a new slide leaves no empty row behind.
+   * Save & Add calls straight back into this method, which is the whole of the
+   * "keep going" behaviour: the finished slide has already landed in the list.
+   */
   private addSlide(): void {
-    const slide = emptySlide(this.defaultAnimation());
-    this.draft.slides.push(slide);
-    // Straight into the slide's own editor: an empty row in the list is not
-    // something anyone wants to look at, they want to fill it in.
-    this.editSlide(slide.id);
-    void this.render();
+    const total = this.draft.slides.length + 1;
+    new SlideEditorApp(
+      emptySlide(this.defaultAnimation()),
+      true,
+      game.i18n.format("FCS.Editor.SlideNumber", { number: total, total }),
+      (edited, addAnother) => {
+        this.draft.slides.push(edited);
+        void this.render();
+        if (addAnother) this.addSlide();
+      },
+    ).render(true);
   }
 
   private editSlide(id: string): void {
@@ -137,6 +150,7 @@ export class SlideshowEditorApp extends HandlebarsApplicationMixin(ApplicationV2
     if (!slide) return;
     new SlideEditorApp(
       slide,
+      false,
       game.i18n.format("FCS.Editor.SlideNumber", {
         number: index + 1,
         total: this.draft.slides.length,
