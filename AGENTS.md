@@ -87,7 +87,12 @@ styles/ templates/ lang/   served from the repo root as-is
 - **Templates**: add the path to `TEMPLATES` in `constants.ts` and point a part
   at it. `HandlebarsApplicationMixin` fetches and compiles a part template on
   first render, so there is no preload step to register it in. Every part must
-  render **exactly one** root element.
+  render **exactly one** root element — always, including the "nothing to show"
+  branch, and counting conditional blocks that are siblings. A GM-only section
+  beside the main one is the trap: it renders fine for players and throws
+  "Template part must render a single HTML element" only for the GM, which
+  reads like a permissions bug. Wrap the whole body in one unconditional
+  element (see `templates/stage.hbs`).
 - **Types**: there is no full Foundry type package — `src/types/foundry.d.ts` is
   a deliberately minimal shim. When you touch a new Foundry global, **add it to
   the shim** rather than reaching for `any` everywhere.

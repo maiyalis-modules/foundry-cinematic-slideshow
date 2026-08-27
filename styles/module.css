@@ -170,6 +170,21 @@
   display: none;
 }
 
+/*
+ * The single root element every render produces — the slide and the GM control
+ * bar are its children. ApplicationV2 requires a part to render exactly one
+ * element, so the wrapper is unconditional; it also gives the absolutely
+ * positioned control bar something to anchor to.
+ */
+.fcs-stage__inner {
+  position: relative;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
 .fcs-stage__slide {
   position: relative;
   display: flex;

@@ -2,56 +2,66 @@
      bottom is GM-only and lives here rather than in a window of its own,
      because this overlay covers anything behind it (see apps/stage-app.ts).
 
+     Everything is wrapped in one `.fcs-stage__inner` element, and the wrapper is
+     OUTSIDE the `{{#if active}}`: ApplicationV2 requires a part to render
+     exactly one element, always. Two siblings (slide + GM controls) throws, and
+     so does rendering nothing — and the first of those only throws for a GM,
+     which makes it look like a permissions bug rather than a template one.
+
      `data-animation` carries the entrance class so `_onRender` can strip and
      re-add it to restart the animation on Replay. --}}
-{{#if active}}
-  <div class="fcs-stage__slide {{layoutClass}} {{fitClass}} {{animationClass}}"
-       data-animation="{{animationClass}}">
+<div class="fcs-stage__inner">
+  {{#if active}}
 
-    {{#if image}}
-      <div class="fcs-stage__image" style="background-image: url('{{image}}');"></div>
-    {{/if}}
+    <div class="fcs-stage__slide {{layoutClass}} {{fitClass}} {{animationClass}}"
+         data-animation="{{animationClass}}">
 
-    {{#if hasText}}
-      <div class="fcs-stage__text">
-        {{#if title}}<h1 class="fcs-stage__title">{{title}}</h1>{{/if}}
-        {{#each paragraphs}}
-          <p class="fcs-stage__paragraph">{{this}}</p>
-        {{/each}}
+      {{#if image}}
+        <div class="fcs-stage__image" style="background-image: url('{{image}}');"></div>
+      {{/if}}
+
+      {{#if hasText}}
+        <div class="fcs-stage__text">
+          {{#if title}}<h1 class="fcs-stage__title">{{title}}</h1>{{/if}}
+          {{#each paragraphs}}
+            <p class="fcs-stage__paragraph">{{this}}</p>
+          {{/each}}
+        </div>
+      {{/if}}
+
+    </div>
+
+    {{#if isPresenter}}
+      <div class="fcs-stage__controls">
+        <span class="fcs-stage__show-name">{{name}}</span>
+
+        <button type="button" data-fcs="previous" {{#if atStart}}disabled{{/if}}
+                data-tooltip="{{localize "FCS.Stage.PreviousTooltip"}}">
+          <i class="fa-solid fa-chevron-left"></i>
+          {{localize "FCS.Stage.Previous"}}
+        </button>
+
+        <button type="button" data-fcs="replay"
+                data-tooltip="{{localize "FCS.Stage.ReplayTooltip"}}">
+          <i class="fa-solid fa-rotate-left"></i>
+          {{localize "FCS.Stage.Replay"}}
+        </button>
+
+        <span class="fcs-stage__counter">{{counter}}</span>
+
+        <button type="button" data-fcs="next" {{#if atEnd}}disabled{{/if}}
+                data-tooltip="{{localize "FCS.Stage.NextTooltip"}}">
+          {{localize "FCS.Stage.Next"}}
+          <i class="fa-solid fa-chevron-right"></i>
+        </button>
+
+        <button type="button" class="fcs-stage__end" data-fcs="end"
+                data-tooltip="{{localize "FCS.Stage.EndTooltip"}}">
+          <i class="fa-solid fa-xmark"></i>
+          {{localize "FCS.Stage.End"}}
+        </button>
       </div>
     {{/if}}
 
-  </div>
-
-  {{#if isPresenter}}
-    <div class="fcs-stage__controls">
-      <span class="fcs-stage__show-name">{{name}}</span>
-
-      <button type="button" data-fcs="previous" {{#if atStart}}disabled{{/if}}
-              data-tooltip="{{localize "FCS.Stage.PreviousTooltip"}}">
-        <i class="fa-solid fa-chevron-left"></i>
-        {{localize "FCS.Stage.Previous"}}
-      </button>
-
-      <button type="button" data-fcs="replay"
-              data-tooltip="{{localize "FCS.Stage.ReplayTooltip"}}">
-        <i class="fa-solid fa-rotate-left"></i>
-        {{localize "FCS.Stage.Replay"}}
-      </button>
-
-      <span class="fcs-stage__counter">{{counter}}</span>
-
-      <button type="button" data-fcs="next" {{#if atEnd}}disabled{{/if}}
-              data-tooltip="{{localize "FCS.Stage.NextTooltip"}}">
-        {{localize "FCS.Stage.Next"}}
-        <i class="fa-solid fa-chevron-right"></i>
-      </button>
-
-      <button type="button" class="fcs-stage__end" data-fcs="end"
-              data-tooltip="{{localize "FCS.Stage.EndTooltip"}}">
-        <i class="fa-solid fa-xmark"></i>
-        {{localize "FCS.Stage.End"}}
-      </button>
-    </div>
   {{/if}}
-{{/if}}
+</div>

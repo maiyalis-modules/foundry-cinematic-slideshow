@@ -123,9 +123,10 @@ Hooks.on("updateSetting", (setting: { key?: string } | undefined) => {
     return;
   }
   if (setting?.key !== `${MODULE_ID}.${SETTINGS.presentation}`) return;
+  // One call, not two: render(true) on an already-rendered app re-renders it,
+  // so syncStage covers both putting the stage up and moving it to the new
+  // slide. A second render here would restart the entrance animation twice.
   syncStage();
-  // Already up: re-render to move to the new slide (or replay the current one).
-  if (stage?.rendered) void stage.render();
 });
 
 // Add the launch button to the Journal sidebar's header controls, unless
