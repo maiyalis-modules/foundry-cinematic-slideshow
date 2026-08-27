@@ -1,6 +1,6 @@
 {
   "name": "foundry-cinematic-slideshow",
-  "version": "0.0.1",
+  "version": "1.1.0",
   "description": "Maiyalis: Cinematic Slideshow — GM-controlled visual slide sequences broadcast to the table in FoundryVTT.",
   "type": "module",
   "private": true,

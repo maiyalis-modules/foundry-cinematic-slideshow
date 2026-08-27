@@ -91,7 +91,7 @@ module, rewrites `version` / `download` / `manifest` in `module.json` from the
 tag, and publishes `module.json` + `module.zip` as a GitHub release:
 
 ```
-git tag v0.0.2 && git push origin v0.0.2
+git tag v1.1.1 && git push origin v1.1.1
 ```
 
 ## Layout

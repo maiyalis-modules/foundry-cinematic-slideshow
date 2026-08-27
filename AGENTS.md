@@ -192,7 +192,14 @@ styles/ templates/ lang/   served from the repo root as-is
   `%LOCALAPPDATA%\FoundryVTT\Data\modules\foundry-cinematic-slideshow` -> the
   repo root. Foundry serves the built `dist/module.js` and the root assets
   directly.
-- **Releases are tag-driven.** `git tag v0.0.2 && git push origin v0.0.2` runs
+- **Version numbers are not semver.** They are
+  `<campaign>.<session>.<iteration>` — the campaign the module shipped for, the
+  session within it, and the iteration within that session counting from zero.
+  `v1.1.0` is "campaign 1, session 1, first cut". Every Maiyalis module shares
+  this scheme, which is why this one starts at 1.1.0 rather than at 0.x. Do not
+  reason about a bump as major/minor/patch, and do not infer a breaking change
+  from a leading-digit change.
+- **Releases are tag-driven.** `git tag v1.1.1 && git push origin v1.1.1` runs
   `.github/workflows/release.yml`, which builds, rewrites version / download /
   manifest in `module.json` from the tag, and publishes `module.json` +
   `module.zip`. The tag is the source of truth — do not hand-edit `version` in
