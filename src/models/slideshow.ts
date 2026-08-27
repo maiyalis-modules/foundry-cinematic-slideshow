@@ -23,6 +23,13 @@ export const LAYOUTS = {
   imageRight: "imageRight",
   /** Image on top, text beneath it. */
   imageTop: "imageTop",
+  /**
+   * Image fills the stage, text in a translucent band across the full width of
+   * the bottom — the halfway house between `overlay` and `imageTop`. The band
+   * never crops the image the way `imageTop` does, and unlike `overlay` it
+   * leaves the top two-thirds of the picture clear to be looked at.
+   */
+  bottomBand: "bottomBand",
 } as const;
 
 export type Layout = (typeof LAYOUTS)[keyof typeof LAYOUTS];

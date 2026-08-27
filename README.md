@@ -9,8 +9,9 @@ System-agnostic — it touches no system data at all.
 ## Features
 
 - **Build slideshows** — each slide is an image, an optional title, and body
-  text, with a layout (text over image, side by side, image only, text only) and
-  an entrance animation (fade, slide, zoom, Ken Burns drift).
+  text, with a layout (text over image, a caption band across the bottom, side
+  by side, image only, text only) and an entrance animation (fade, slide, zoom,
+  Ken Burns drift).
 - **Present to the table** — one full-screen stage on every connected client,
   driven by the GM.
 - **GM controls, on the stage** — Back / Replay / Next / End, plus keyboard

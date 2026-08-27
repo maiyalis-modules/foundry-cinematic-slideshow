@@ -61,6 +61,7 @@
   "FCS.Layout.imageLeft": "Image left, text right",
   "FCS.Layout.imageRight": "Image right, text left",
   "FCS.Layout.imageTop": "Image above text",
+  "FCS.Layout.bottomBand": "Text band across the bottom",
 
   "FCS.Animation.none": "None",
   "FCS.Animation.fade": "Fade in",

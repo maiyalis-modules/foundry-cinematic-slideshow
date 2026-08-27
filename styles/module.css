@@ -288,6 +288,58 @@
   align-self: auto;
 }
 
+/*
+ * Image behind, text in a full-bleed translucent band along the bottom — the
+ * halfway house between `overlay` (a floating box, image untouched) and
+ * `imageTop` (text below the image, image cropped to make room).
+ *
+ * The image is taken out of flow, so the band is the only flex child: pushed to
+ * the end of a column and stretched to the full width. `max-width` has to be
+ * cleared explicitly — `.fcs-stage__text` caps itself at 60ch for readability,
+ * which is exactly what a full-width band must not do.
+ */
+.fcs-layout--bottomBand {
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: flex-end;
+}
+
+.fcs-layout--bottomBand .fcs-stage__image {
+  position: absolute;
+  inset: 0;
+}
+
+.fcs-layout--bottomBand .fcs-stage__text {
+  position: relative;
+  width: 100%;
+  max-width: none;
+  padding: 1.75rem clamp(2rem, 6vw, 6rem);
+  border-top: 1px solid rgb(255 255 255 / 12%);
+  /* A gradient rather than a flat fill: the hard top edge of a solid band cuts
+     the picture in half, while a few hundred pixels of fade reads as the image
+     darkening into the text. */
+  background: linear-gradient(to top, rgb(0 0 0 / 82%) 55%, rgb(0 0 0 / 60%));
+  backdrop-filter: blur(4px);
+}
+
+/*
+ * The GM control bar also lives at the bottom centre, so on this layout alone it
+ * would sit on top of the caption. Move it to the top edge rather than nudging
+ * it up by a guess — the band is as tall as its text, so there is no offset that
+ * would be right for every slide.
+ *
+ * Players never have the bar, so this only ever changes the GM view, and
+ * `:has()` going unsupported degrades to the overlap rather than to anything
+ * broken.
+ */
+.fcs-stage__inner:has(.fcs-layout--bottomBand) .fcs-stage__controls {
+  top: 0;
+  bottom: auto;
+  border-top: none;
+  border-bottom: 1px solid rgb(255 255 255 / 15%);
+  border-radius: 0 0 8px 8px;
+}
+
 /* ---- animations ------------------------------------------------------- */
 
 /*
